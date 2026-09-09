@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Super-tap launcher: press arms, any other Super+key cancels, release fires if still armed.
+# Spike prototype; the real one lives in chiroptera-dots.
+flag="${XDG_RUNTIME_DIR:-/tmp}/chiroptera-super-tap"
+case "$1" in
+  press)     touch "$flag" ;;
+  interrupt) rm -f "$flag" ;;
+  release)   if [ -e "$flag" ]; then rm -f "$flag"; exec chiroptera msg panel-toggle launcher; fi ;;
+esac

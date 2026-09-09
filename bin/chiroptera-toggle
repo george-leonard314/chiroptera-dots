@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""Toggle a Hyprland special workspace, launching or moving its app in first.
+Spike prototype of caelestia's `toggle`; the real one lives in chiroptera-dots.
+Usage: chiroptera-toggle <name>   (names below) | specialws
+"""
+import json, shlex, subprocess, sys
+
+# name -> list of (match, command, move)
+TOGGLES = {
+    "communication": [({"class": "discord"}, ["discord"], True),
+                      ({"class": "vesktop"}, ["vesktop"], True),
+                      ({"class": "whatsapp"}, None, True)],
+    "music":  [({"class": "Spotify"}, ["spotify"], True)],
+    "sysmon": [({"class": "btop"}, ["foot", "-a", "btop", "-T", "btop", "btop"], False)],
+    "todo":   [({"class": "superProductivity"}, ["superproductivity"], True)],
+    "obsidian": [({"class": "obsidian"}, ["obsidian"], True)],
+}
+
+def hyprctl(*args):
+    return subprocess.run(["hyprctl", *args], capture_output=True, text=True).stdout
+
+def dispatch(*args):
+    subprocess.run(["hyprctl", "dispatch", *args], capture_output=True)
+
+def clients():
+    return json.loads(hyprctl("-j", "clients"))
+
+def matches(client, match):
+    return all(str(v).lower() in str(client.get(k, "")).lower() for k, v in match.items())
+
+def main(name):
+    if name == "specialws":
+        active = json.loads(hyprctl("-j", "activeworkspace"))
+        dispatch("togglespecialworkspace", "special")
+        return
+    entries = TOGGLES[name]
+    ws = f"special:{name}"
+    cs = clients()
+    present = False
+    for match, command, move in entries:
+        found = [c for c in cs if matches(c, match)]
+        if found:
+            present = True
+            if move:
+                for c in found:
+                    if c["workspace"]["name"] != ws:
+                        dispatch("movetoworkspacesilent", f"{ws},address:{c['address']}")
+        elif command:
+            present = True
+            dispatch("exec", f"[workspace {ws}] {shlex.join(command)}")
+    if present:
+        dispatch("togglespecialworkspace", name)
+
+if __name__ == "__main__":
+    main(sys.argv[1])

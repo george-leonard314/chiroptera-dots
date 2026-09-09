@@ -1,0 +1,30 @@
+# Chiroptera Shell user config (declarative base; Settings GUI overrides live in
+# ~/.local/state/chiroptera/settings.toml). Captured into chiroptera-dots in step 2.
+
+[theme.templates]
+enable_builtin_templates   = true
+builtin_ids                = ["foot", "btop", "gtk3", "gtk4", "qt"]
+enable_community_templates = true
+community_ids              = []
+
+# Live-recolor every open terminal when the palette changes (foot cannot reload
+# its config, so OSC sequences are pushed to each pty).
+[theme.templates.user.terminal-sequences]
+input_path  = "~/.config/chiroptera/templates/terminal-sequences"
+output_path = "~/.cache/terminal-sequences"
+post_hook   = "tee /dev/pts/[0-9]* < ~/.cache/terminal-sequences"
+
+# Control-center button (the one that carried Noctalia's owl) shows the Chiroptera bat,
+# tinted with the widget colour so it follows the palette. The launcher keeps its default glyph.
+[widget.control-center]
+custom_image          = "~/.local/share/chiroptera/branding/chiroptera-bat-icon.svg"
+custom_image_colorize = true
+
+# fastfetch logo: the dragon as an SVG whose gradient follows the palette; the hook
+# renders the PNG that fastfetch prints via Sixel, so every new fastfetch matches the wallpaper.
+[theme.templates.user.fastfetch-logo]
+input_path  = "~/.config/chiroptera/templates/fastfetch-logo.svg"
+output_path = "~/.local/share/chiroptera/branding/fastfetch-logo.svg"
+post_hook   = "rsvg-convert -w 480 ~/.local/share/chiroptera/branding/fastfetch-logo.svg -o ~/.local/share/chiroptera/branding/fastfetch-logo.png.tmp && mv -f ~/.local/share/chiroptera/branding/fastfetch-logo.png.tmp ~/.local/share/chiroptera/branding/fastfetch-logo.png && rm -rf ~/.cache/fastfetch/images"
+# Run inline so the PNG is never half-written or stale when a terminal starts.
+hook_async  = false
