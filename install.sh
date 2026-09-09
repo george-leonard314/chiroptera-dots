@@ -6,8 +6,12 @@
 #   ./install.sh --force   copy, overwriting
 #   ./install.sh --diff    show what differs, change nothing
 #
-# A replaced path is backed up once as <path>.pre-dots.
+# Every replaced path is backed up as <path>.pre-dots-<timestamp> (one new
+# backup per run, never overwritten). A symlink into this checkout is never
+# archived -- it holds no user content, git already versions its target. If a
+# backup cannot be written, the run aborts before anything is replaced.
 set -euo pipefail
+shopt -s nullglob
 here=$(cd "$(dirname "$0")" && pwd)
 cfg=${XDG_CONFIG_HOME:-$HOME/.config}
 data=${XDG_DATA_HOME:-$HOME/.local/share}
@@ -15,7 +19,29 @@ mode=${1:---copy}
 
 entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm)
 
-backup() { [ -e "$1" ] && [ ! -e "$1.pre-dots" ] && cp -a "$1" "$1.pre-dots" || true; }
+backup() {
+  local target=$1 resolved stamp dest
+  # Nothing there (note: -e is false for a dangling symlink, so test -L too).
+  [ -e "$target" ] || [ -L "$target" ] || return 0
+
+  # A symlink into this checkout holds no user content: its target is the repo,
+  # which git already versions. Archiving it would create a useless self-reference.
+  if [ -L "$target" ]; then
+    resolved=$(readlink -f "$target" 2>/dev/null || true)
+    case "$resolved" in
+      "$here"|"$here"/*) return 0 ;;
+    esac
+  fi
+
+  # Timestamped, so a later edit is never silently overwritten by a second run.
+  stamp=$(date +%Y%m%d-%H%M%S)
+  dest="$target.pre-dots-$stamp"
+  if ! cp -a "$target" "$dest"; then
+    echo "install.sh: could not back up $target -- aborting before anything is replaced" >&2
+    exit 1
+  fi
+  echo "backed up $target -> $dest"
+}
 
 case "$mode" in
   --diff)
@@ -43,9 +69,19 @@ done
 
 # Branding and helper scripts are shared regardless of mode.
 mkdir -p "$data/chiroptera/branding"
-cp -a "$here"/branding/*.svg "$data/chiroptera/branding/"
+svgs=("$here"/branding/*.svg)
+if [ "${#svgs[@]}" -gt 0 ]; then
+  cp -a "${svgs[@]}" "$data/chiroptera/branding/"
+else
+  echo "no branding SVGs found in $here/branding" >&2
+fi
 cp -a "$here"/branding/wallpapers/. "$HOME/Pictures/Wallpapers/"
-install -m755 "$here"/bin/* "$HOME/.local/bin/"
+bins=("$here"/bin/*)
+if [ "${#bins[@]}" -gt 0 ]; then
+  install -m755 "${bins[@]}" "$HOME/.local/bin/"
+else
+  echo "no helper scripts found in $here/bin" >&2
+fi
 echo "installed branding, wallpapers and helper scripts"
 
 echo

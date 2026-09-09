@@ -13,7 +13,8 @@ hyprctl reload && chiroptera msg config-reload
 ```
 
 `--diff` shows what would change; `--force` overwrites. Anything replaced is
-backed up once as `<path>.pre-dots`.
+backed up as `<path>.pre-dots-<timestamp>` on every run; a failed backup
+aborts before anything is touched.
 
 ## What is here
 
