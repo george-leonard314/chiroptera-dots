@@ -6,10 +6,11 @@
 #   ./install.sh --force   copy, overwriting
 #   ./install.sh --diff    show what differs, change nothing
 #
-# Every replaced path is backed up as <path>.pre-dots-<timestamp> (one new
-# backup per run, never overwritten). A symlink into this checkout is never
-# archived -- it holds no user content, git already versions its target. If a
-# backup cannot be written, the run aborts before anything is replaced.
+# Every replaced path is backed up as <path>.pre-dots-<timestamp> (never
+# overwritten -- a colliding stamp gets a numeric suffix). A symlink into
+# this checkout is never archived -- it holds no user content, git already
+# versions its target. If a backup cannot be written, the run aborts and
+# reports exactly which entries were already replaced before the failure.
 set -euo pipefail
 shopt -s nullglob
 here=$(cd "$(dirname "$0")" && pwd)
@@ -19,8 +20,24 @@ mode=${1:---copy}
 
 entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm)
 
+# Destinations already replaced or linked in this run, so an abort can report
+# real progress instead of implying nothing happened.
+replaced=()
+
+abort() {
+  echo "install.sh: $1" >&2
+  if [ "${#replaced[@]}" -gt 0 ]; then
+    echo "install.sh: aborting. ${#replaced[@]} entr(y|ies) were already replaced in this run:" >&2
+    printf '  %s\n' "${replaced[@]}" >&2
+    echo "install.sh: the rest were not reached. Restore any of the above from its newest <path>.pre-dots-* backup." >&2
+  else
+    echo "install.sh: aborting. Nothing was replaced." >&2
+  fi
+  exit 1
+}
+
 backup() {
-  local target=$1 resolved stamp dest
+  local target=$1 resolved stamp dest n
   # Nothing there (note: -e is false for a dangling symlink, so test -L too).
   [ -e "$target" ] || [ -L "$target" ] || return 0
 
@@ -34,11 +51,17 @@ backup() {
   fi
 
   # Timestamped, so a later edit is never silently overwritten by a second run.
+  # Two runs in the same second still get distinct files: disambiguate on
+  # collision rather than clobbering the earlier run's backup.
   stamp=$(date +%Y%m%d-%H%M%S)
   dest="$target.pre-dots-$stamp"
+  n=1
+  while [ -e "$dest" ] || [ -L "$dest" ]; do
+    dest="$target.pre-dots-$stamp.$n"
+    n=$((n + 1))
+  done
   if ! cp -a "$target" "$dest"; then
-    echo "install.sh: could not back up $target -- aborting before anything is replaced" >&2
-    exit 1
+    abort "could not back up $target"
   fi
   echo "backed up $target -> $dest"
 }
@@ -59,11 +82,11 @@ for e in "${entries[@]}"; do
   src="$here/config/$e"; dst="$cfg/$e"
   [ -e "$src" ] || continue
   if [ "$mode" = "--link" ]; then
-    backup "$dst"; rm -rf "$dst"; ln -s "$src" "$dst"; echo "linked  $dst"
+    backup "$dst"; rm -rf "$dst"; ln -s "$src" "$dst"; replaced+=("$dst"); echo "linked  $dst"
   elif [ -e "$dst" ] && [ "$mode" != "--force" ] && ! diff -rq "$src" "$dst" >/dev/null 2>&1; then
     echo "skipped $dst (differs; --force to overwrite)"
   else
-    backup "$dst"; rm -rf "$dst"; cp -a "$src" "$dst"; echo "copied  $dst"
+    backup "$dst"; rm -rf "$dst"; cp -a "$src" "$dst"; replaced+=("$dst"); echo "copied  $dst"
   fi
 done
 
