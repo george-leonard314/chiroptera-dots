@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Toggle a Hyprland special workspace, launching or moving its app in first.
-Spike prototype of caelestia's `toggle`; the real one lives in chiroptera-dots.
+Spike prototype of caelestia's `toggle`; the real one lives in chiroptera-dots. <!-- keep -->
 Usage: chiroptera-toggle <name>   (names below) | specialws
 """
 import json, shlex, subprocess, sys
