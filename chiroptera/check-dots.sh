@@ -20,13 +20,40 @@ if [ -n "$generated" ]; then
   echo "check-dots: generated files are tracked:" >&2; echo "$generated" >&2; status=1
 fi
 
-# Every `chiroptera msg <cmd>` in the keybinds must be a real IPC command.
+# Every `chiroptera msg <cmd> ...` in config/ must be a real IPC command, and its
+# arguments must be real panel ids / media actions / session actions / plugin ids
+# (not just the subcommand — a valid subcommand with a typo'd argument is still dead).
 if command -v chiroptera >/dev/null; then
   valid=$(chiroptera msg --help 2>&1 | grep -E '^\s{2}[a-z]' | awk '{print $1}')
-  used=$(grep -ohE 'chiroptera msg [a-z-]+' config/hypr -r | awk '{print $3}' | sort -u)
-  for cmd in $used; do
-    grep -qx "$cmd" <<<"$valid" || { echo "check-dots: unknown IPC command '$cmd'" >&2; status=1; }
-  done
+  panel_ids=$'clipboard\ncontrol-center\nlauncher\npolkit\nsession\nsetup-wizard\ntray-drawer\nwallpaper'
+  media_actions=$'next\nprevious\ntoggle\nplay\npause\nstop\nnext-player\nprevious-player'
+  session_actions=$'lock\nsuspend\nlock-and-suspend\nlogout\nreboot\nshutdown'
+  plugins=$(chiroptera msg plugins list 2>&1 | awk '{print $1}')
+
+  invocations=$(grep -rohE 'chiroptera msg [^#]*' config 2>/dev/null | sed -E 's/[[:space:]]+$//' | sort -u)
+  while IFS= read -r inv; do
+    [ -z "$inv" ] && continue
+    read -r _bin _msg cmd rest <<<"$inv"
+    if ! grep -qx "$cmd" <<<"$valid"; then
+      echo "check-dots: unknown IPC command '$cmd' in '$inv'" >&2; status=1; continue
+    fi
+    arg1="${rest%% *}"
+    case "$cmd" in
+      panel-toggle|panel-open|panel-close)
+        grep -qx "$arg1" <<<"$panel_ids" || { echo "check-dots: unknown panel id '$arg1' in '$inv'" >&2; status=1; }
+        ;;
+      media)
+        grep -qx "$arg1" <<<"$media_actions" || { echo "check-dots: unknown media action '$arg1' in '$inv'" >&2; status=1; }
+        ;;
+      session)
+        grep -qx "$arg1" <<<"$session_actions" || { echo "check-dots: unknown session action '$arg1' in '$inv'" >&2; status=1; }
+        ;;
+      plugin)
+        authorplugin="${arg1%%:*}"
+        grep -qx "$authorplugin" <<<"$plugins" || { echo "check-dots: unknown plugin id '$authorplugin' in '$inv'" >&2; status=1; }
+        ;;
+    esac
+  done <<<"$invocations"
 fi
 
 [ "$status" -eq 0 ] && echo "check-dots: ok"
