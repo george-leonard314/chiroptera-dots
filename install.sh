@@ -20,6 +20,19 @@ mode=${1:---copy}
 
 entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm)
 
+# Run either from a git checkout or as the installed /usr/bin/chiroptera-dots.
+if [ -d "$here/config" ]; then
+  src_config="$here/config"
+  src_branding="$here/branding"
+  src_wallpapers="$here/branding/wallpapers"
+  src_bin="$here/bin"
+else
+  src_config="/usr/share/chiroptera/dots"
+  src_branding="/usr/share/chiroptera/branding"
+  src_wallpapers="/usr/share/backgrounds/chiroptera"
+  src_bin=""            # the package already installed these to /usr/bin
+fi
+
 # Destinations already replaced or linked in this run, so an abort can report
 # real progress instead of implying nothing happened.
 replaced=()
@@ -69,17 +82,23 @@ backup() {
 case "$mode" in
   --diff)
     for e in "${entries[@]}"; do
-      diff -rq "$here/config/$e" "$cfg/$e" 2>&1 | sed "s|$here/config/||;s|$cfg/||" || true
+      diff -rq "$src_config/$e" "$cfg/$e" 2>&1 | sed "s|$src_config/||;s|$cfg/||" || true
     done
     exit 0 ;;
-  --link|--copy|--force) ;;
+  --link)
+    if [ "$src_config" != "$here/config" ]; then
+      echo "install.sh: --link needs a git checkout to link into; this is an installed copy with no source tree to link to. Use --copy or --force instead." >&2
+      exit 2
+    fi
+    ;;
+  --copy|--force) ;;
   *) echo "usage: $0 [--link|--copy|--force|--diff]" >&2; exit 2 ;;
 esac
 
 mkdir -p "$cfg" "$data/chiroptera" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers"
 
 for e in "${entries[@]}"; do
-  src="$here/config/$e"; dst="$cfg/$e"
+  src="$src_config/$e"; dst="$cfg/$e"
   [ -e "$src" ] || continue
   if [ "$mode" = "--link" ]; then
     backup "$dst"; rm -rf "$dst"; ln -s "$src" "$dst"; replaced+=("$dst"); echo "linked  $dst"
@@ -92,18 +111,32 @@ done
 
 # Branding and helper scripts are shared regardless of mode.
 mkdir -p "$data/chiroptera/branding"
-svgs=("$here"/branding/*.svg)
-if [ "${#svgs[@]}" -gt 0 ]; then
-  cp -a "${svgs[@]}" "$data/chiroptera/branding/"
+if [ -d "$src_branding" ]; then
+  svgs=("$src_branding"/*.svg)
+  if [ "${#svgs[@]}" -gt 0 ]; then
+    cp -a "${svgs[@]}" "$data/chiroptera/branding/"
+  else
+    echo "no branding SVGs found in $src_branding" >&2
+  fi
 else
-  echo "no branding SVGs found in $here/branding" >&2
+  echo "no branding directory found at $src_branding" >&2
 fi
-cp -a "$here"/branding/wallpapers/. "$HOME/Pictures/Wallpapers/"
-bins=("$here"/bin/*)
-if [ "${#bins[@]}" -gt 0 ]; then
-  install -m755 "${bins[@]}" "$HOME/.local/bin/"
+
+if [ -d "$src_wallpapers" ]; then
+  cp -a "$src_wallpapers"/. "$HOME/Pictures/Wallpapers/"
 else
-  echo "no helper scripts found in $here/bin" >&2
+  echo "no wallpapers found in $src_wallpapers" >&2
+fi
+
+if [ -n "$src_bin" ]; then
+  bins=("$src_bin"/*)
+  if [ "${#bins[@]}" -gt 0 ]; then
+    install -m755 "${bins[@]}" "$HOME/.local/bin/"
+  else
+    echo "no helper scripts found in $src_bin" >&2
+  fi
+else
+  echo "helper scripts come from the package (already in /usr/bin); skipping"
 fi
 echo "installed branding, wallpapers and helper scripts"
 

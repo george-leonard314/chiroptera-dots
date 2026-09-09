@@ -42,20 +42,12 @@ if status is-interactive
 end
 export PATH="$HOME/.local/bin:$PATH"
 
-fish_add_path /home/g/.spicetify
+# Optional per-user tooling: added only when installed.
+test -d $HOME/.spicetify; and fish_add_path $HOME/.spicetify
+test -d $HOME/.opencode/bin; and fish_add_path $HOME/.opencode/bin
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-if test -f /home/g/miniforge3/bin/conda
-    eval /home/g/miniforge3/bin/conda "shell.fish" "hook" $argv | source
-else
-    if test -f "/home/g/miniforge3/etc/fish/conf.d/conda.fish"
-        . "/home/g/miniforge3/etc/fish/conf.d/conda.fish"
-    else
-        set -x PATH "/home/g/miniforge3/bin" $PATH
-    end
+if test -f $HOME/miniforge3/bin/conda
+    eval $HOME/miniforge3/bin/conda "shell.fish" "hook" $argv | source
+else if test -f $HOME/miniforge3/etc/fish/conf.d/conda.fish
+    . $HOME/miniforge3/etc/fish/conf.d/conda.fish
 end
-# <<< conda initialize <<<
-
-# opencode
-fish_add_path /home/g/.opencode/bin
