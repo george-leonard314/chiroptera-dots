@@ -1,6 +1,7 @@
-# Personal: monitor layout, shell variables, secrets
+# Personal: monitor layout, shell variables, secrets, per-machine keybind overrides
 config/hypr/monitors.conf
 config/hypr/monitors.lua
+config/hypr/hyprland/user.conf
 config/fish/fish_variables
 config/chiroptera/secrets*
 
