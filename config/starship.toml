@@ -1,6 +1,9 @@
 # version: 1.0.0
 
 add_newline = false
+# The 30 ms default is too short for a large home directory and big repos, and
+# every miss prints "Scanning current directory timed out".
+scan_timeout = 100
 continuation_prompt = "[▸▹ ](dimmed white)"
 
 format = """($nix_shell$container$fill$git_metrics\n)$cmd_duration\
