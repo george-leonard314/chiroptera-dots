@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Install the author's apps on a fresh ChiropteraOS, through paru:
+# /usr/share/chiroptera/apps.txt always, apps-blackarch.txt when the
+# [blackarch] repository is configured. Safe to re-run: --needed skips
+# anything already installed.
+
+set -euo pipefail
+
+dir=${CHIROPTERA_APPS_DIR:-/usr/share/chiroptera}
+
+read_list() {  # file
+    sed -e 's/#.*//' -e 's/[[:space:]]//g' "$1" | grep -v '^$' || true
+}
+
+mapfile -t pkgs < <(read_list "$dir/apps.txt")
+if pacman-conf --repo-list | grep -qx blackarch; then
+    mapfile -t -O "${#pkgs[@]}" pkgs < <(read_list "$dir/apps-blackarch.txt")
+else
+    echo "chiroptera-apps: [blackarch] is not configured; skipping apps-blackarch.txt" >&2
+fi
+
+# paru comes from [cachyos], which chiroptera-hwd adds.
+if ! command -v paru >/dev/null; then
+    sudo pacman -S --needed paru
+fi
+paru -S --needed "${pkgs[@]}"

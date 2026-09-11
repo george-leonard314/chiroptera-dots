@@ -32,3 +32,17 @@ aborts before anything is touched.
 Put anything specific to one machine in `~/.config/hypr/hyprland/user.conf`,
 which is sourced last. Monitor layout lives in `~/.config/hypr/monitors.conf`
 and is deliberately not tracked.
+
+## Apps
+
+`packages/apps.txt` lists the author's apps beyond the desktop: Arch and
+CachyOS repository packages and AUR packages. `packages/apps-blackarch.txt`
+holds the ones that need the BlackArch repository. On a fresh ChiropteraOS,
+after first boot:
+
+```sh
+chiroptera-apps
+```
+
+It installs everything through paru with `--needed`, so re-running it is
+safe. The BlackArch list is skipped unless `[blackarch]` is configured.
