@@ -1,0 +1,4 @@
+# Thunar's "Open Terminal Here" and friends go through xfce4's preferred
+# applications; foot is the ChiropteraOS terminal.
+TerminalEmulator=foot
+FileManager=thunar

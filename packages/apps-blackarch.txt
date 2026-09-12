@@ -1,9 +1,3 @@
-# BlackArch packages. `chiroptera-apps` installs these only when the
+# BlackArch packages, installed by `chiroptera-apps` only when the
 # [blackarch] repository is configured (https://blackarch.org/downloads.html).
-burpsuite
-enum4linux
-ffuf
-seclists
-smbmap
-tor-browser
-whatweb
+# Empty on purpose: add the security tools you want on a machine.
