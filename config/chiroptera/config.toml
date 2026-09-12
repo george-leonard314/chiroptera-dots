@@ -28,3 +28,7 @@ output_path = "~/.local/share/chiroptera/branding/fastfetch-logo.svg"
 post_hook   = "rsvg-convert -w 480 ~/.local/share/chiroptera/branding/fastfetch-logo.svg -o ~/.local/share/chiroptera/branding/fastfetch-logo.png.tmp && mv -f ~/.local/share/chiroptera/branding/fastfetch-logo.png.tmp ~/.local/share/chiroptera/branding/fastfetch-logo.png && rm -rf ~/.cache/fastfetch/images"
 # Run inline so the PNG is never half-written or stale when a terminal starts.
 hook_async  = false
+
+# Wallpaper every new account starts with; the picker's choice then overrides it.
+[wallpaper.default]
+path = "/usr/share/backgrounds/chiroptera/chiroptera-default.png"
