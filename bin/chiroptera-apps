@@ -19,6 +19,11 @@ else
     echo "chiroptera-apps: [blackarch] is not configured; skipping apps-blackarch.txt" >&2
 fi
 
+if ((${#pkgs[@]} == 0)); then
+    echo "chiroptera-apps: nothing to install" >&2
+    exit 0
+fi
+
 # paru comes from [cachyos], which chiroptera-hwd adds.
 if ! command -v paru >/dev/null; then
     sudo pacman -S --needed paru

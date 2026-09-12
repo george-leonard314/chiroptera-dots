@@ -13,7 +13,7 @@ TOGGLES = {
     "music":  [({"class": "Spotify"}, ["spotify"], True)],
     "sysmon": [({"class": "btop"}, ["foot", "-a", "btop", "-T", "btop", "btop"], False)],
     "todo":   [({"class": "superProductivity"}, ["superproductivity"], True)],
-    "obsidian": [({"class": "obsidian"}, ["obsidian"], True)],
+    "notes":  [({"class": "kmg"}, ["kmg"], True)],
 }
 
 def hyprctl(*args):

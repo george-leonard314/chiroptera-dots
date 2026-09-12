@@ -1,9 +1,8 @@
 # Apps that `chiroptera-apps` installs after first boot, through paru.
 #
-# Everything else George wants is already there: the desktop comes from the
-# image (chiroptera-meta), and the installer's "Extra apps" page installs
-# Brave, VSCodium, OnlyOffice, GIMP, Obsidian and paru. Only what no pacman
+# Everything else George wants is already there: the desktop and KMG (notes)
+# come from the image (chiroptera-meta), and the installer's "Extra apps" page
+# installs Brave, VSCodium, OnlyOffice, GIMP and paru. Only what no pacman
 # repository carries belongs here.
 
 # AUR
-siyuan-bin
