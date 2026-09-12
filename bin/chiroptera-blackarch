@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Add the BlackArch repository (https://blackarch.org) to pacman.
+#
+# Bootstrapping a repository means trusting its keyring before the keyring
+# can verify anything, the same knot chiroptera-hwd unties for CachyOS. Here
+# the keyring package is fetched over HTTPS from an official mirror and
+# installed with signature checks off for that one transaction; everything
+# afterwards is verified against it. The repository database names the exact
+# keyring and mirrorlist files, so no version is hardcoded here.
+#
+# Idempotent: a [blackarch] section already in pacman.conf ends the run.
+
+set -euo pipefail
+
+CONF=${PACMAN_CONF:-/etc/pacman.conf}
+MIRROR=${BLACKARCH_MIRROR:-https://mirrors.dotsrc.org/blackarch}
+repo_path="$MIRROR/blackarch/os/x86_64"
+
+die() { printf 'chiroptera-blackarch: %s\n' "$1" >&2; exit 1; }
+
+[[ $EUID -eq 0 ]] || die "must run as root"
+
+if grep -q '^\[blackarch\]' "$CONF"; then
+    echo "chiroptera-blackarch: [blackarch] is already in $CONF; nothing to do."
+    exit 0
+fi
+
+tmp=$(mktemp -d)
+trap 'rm -rf "$tmp"' EXIT
+
+curl -fsSL "$repo_path/blackarch.db.tar.gz" -o "$tmp/blackarch.db.tar.gz" \
+    || die "cannot reach $repo_path"
+
+mapfile -t files < <(bsdtar -xOf "$tmp/blackarch.db.tar.gz" --include '*/desc' \
+    | awk '/^%FILENAME%/ { getline filename }
+           /^%NAME%/ { getline name
+                       if (name == "blackarch-keyring" || name == "blackarch-mirrorlist") print filename }')
+((${#files[@]} == 2)) || die "the database names no keyring and mirrorlist"
+
+for file in "${files[@]}"; do
+    curl -fsSL "$repo_path/$file" -o "$tmp/$file" || die "download failed: $file"
+done
+
+# Signature checks off for this transaction only: these two packages are the
+# keyring itself, fetched over TLS from an official mirror.
+cat > "$tmp/bootstrap.conf" <<'BOOTSTRAP'
+[options]
+HoldPkg = pacman glibc
+Architecture = auto
+SigLevel = Optional TrustAll
+LocalFileSigLevel = Optional TrustAll
+BOOTSTRAP
+
+pacman-key --init
+pacman --config "$tmp/bootstrap.conf" -U --noconfirm "${files[@]/#/$tmp/}"
+pacman-key --populate blackarch
+
+# The shipped mirrorlist has servers enabled; if a future one does not, fall
+# back to the mirror this run used.
+if ! grep -q '^Server' /etc/pacman.d/blackarch-mirrorlist; then
+    printf 'Server = %s/$repo/os/$arch\n' "$MIRROR" >> /etc/pacman.d/blackarch-mirrorlist
+fi
+
+printf '\n[blackarch]\nInclude = /etc/pacman.d/blackarch-mirrorlist\n' >> "$CONF"
+pacman -Sy
+
+echo "chiroptera-blackarch: done. Tools install with pacman, or list them with pacman -Sgg | grep blackarch."
