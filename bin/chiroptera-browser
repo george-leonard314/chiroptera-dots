@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Open the web browser this machine has; Win+W runs it.
+#
+# The installer's Browser page installs exactly one of Firefox, Zen Browser
+# and Brave, so the keybind cannot name a single one. The XDG default for
+# https links wins when it is one of the three; otherwise the first of them
+# that is installed. Arguments are passed on, so `chiroptera-browser URL`
+# works too.
+
+case $(xdg-mime query default x-scheme-handler/https 2>/dev/null) in
+    firefox.desktop)       preferred=firefox ;;
+    zen.desktop)           preferred=zen-browser ;;
+    brave-browser.desktop) preferred=brave ;;
+    *)                     preferred= ;;
+esac
+
+for browser in $preferred firefox zen-browser brave; do
+    if command -v "$browser" >/dev/null; then
+        exec "$browser" "$@"
+    fi
+done
+
+notify-send -a chiroptera-browser "No browser installed" \
+    "Install one, e.g. sudo pacman -S firefox" 2>/dev/null
+echo "chiroptera-browser: none of firefox, zen-browser or brave is installed" >&2
+exit 1

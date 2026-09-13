@@ -2,7 +2,8 @@
 #
 # Everything else George wants is already there: the desktop and KMG (notes)
 # come from the image (chiroptera-meta), and the installer's "Extra apps" page
-# installs Brave, VSCodium, OnlyOffice, GIMP and paru. Only what no pacman
-# repository carries belongs here.
+# installs VSCodium, OnlyOffice, GIMP and paru, and its Browser page one of
+# Firefox, Zen Browser and Brave. Only what no pacman repository carries
+# belongs here.
 
 # AUR
