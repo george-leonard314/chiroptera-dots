@@ -29,6 +29,10 @@ post_hook   = "rsvg-convert -w 480 ~/.local/share/chiroptera/branding/fastfetch-
 # Run inline so the PNG is never half-written or stale when a terminal starts.
 hook_async  = false
 
+# The picker opens the folder install.sh fills, not all of ~/Pictures.
+[wallpaper]
+directory = "~/Pictures/Wallpapers"
+
 # Wallpaper every new account starts with; the picker's choice then overrides it.
 [wallpaper.default]
 path = "/usr/share/backgrounds/chiroptera/chiroptera-default.png"
