@@ -18,7 +18,7 @@ cfg=${XDG_CONFIG_HOME:-$HOME/.config}
 data=${XDG_DATA_HOME:-$HOME/.local/share}
 mode=${1:---copy}
 
-entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm pacseek fontconfig)
+entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm pacseek fontconfig miscellaneous)
 
 # Run either from a git checkout or as the installed /usr/bin/chiroptera-dots.
 if [ -d "$here/config" ]; then

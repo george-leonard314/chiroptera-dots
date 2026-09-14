@@ -25,7 +25,25 @@ aborts before anything is touched.
 | `config/fish` | shell config, the `faah` error sound and red border flash |
 | `config/foot`, `config/btop`, `config/fastfetch`, `config/starship.toml` | terminal and tool configs, coloured by the shell's templates |
 | `branding` | logo marks and the default wallpaper |
+| `config/miscellaneous` | one-off helpers kept in `~/.config/miscellaneous`, such as the Fontys eduroam installer |
 | `bin` | `chiroptera-super-tap` (tap Super for the launcher), `chiroptera-toggle` (special-workspace apps) |
+
+## eduroam (Fontys)
+
+`config/miscellaneous/eduroam-fontys.py` is the eduroam CAT installer for Fontys
+Hogescholen, patched for current NetworkManager. The stock script points the
+profile at a rehashed CA directory (`802-1x.ca-path`); NetworkManager 1.58 and
+later refuse that on per-user profiles, so activation fails with
+`supplicant-config-failed`. The patched copy always uses a single CA bundle
+(`802-1x.ca-cert`), with server certificate checking unchanged.
+
+```sh
+python3 ~/.config/miscellaneous/eduroam-fontys.py   # asks for username and password
+nmcli --ask con up eduroam
+```
+
+It needs `python-dbus`. Other institutions: download their script from
+https://cat.eduroam.org and apply the same change to `save_ca`.
 
 ## Machine-local settings
 
