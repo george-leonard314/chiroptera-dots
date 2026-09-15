@@ -6,8 +6,8 @@ enable_builtin_templates   = true
 builtin_ids                = ["foot", "btop", "gtk3", "gtk4", "qt"]
 enable_community_templates = true
 # zen-browser: Zen follows the wallpaper palette through userChrome.css and
-# userContent.css in every Zen profile (applied on the next Zen start); a
-# no-op when Zen is not installed.
+# userContent.css in every Zen profile; chiroptera-zen-theme recolors open
+# windows live. A no-op when Zen is not installed.
 community_ids              = ["zen-browser"]
 
 # Live-recolor every open terminal when the palette changes (foot cannot reload
