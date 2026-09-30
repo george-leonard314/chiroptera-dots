@@ -1,0 +1,75 @@
+/**
+ * @name Chiroptera
+ * @description Follows the Chiroptera wallpaper palette. Generated; do not edit.
+ * @version 1.0.0
+ */
+
+/* Background opacity: the "80%" in the surface variables below. Raise for more solid, lower for more see-through. */
+
+.theme-dark, .theme-light, :root {
+  --chir-base:    {{colors.background.default.hex}};
+  --chir-lowest:  {{colors.surface_container_lowest.default.hex}};
+  --chir-low:     {{colors.surface_container_low.default.hex}};
+  --chir-mid:     {{colors.surface_container.default.hex}};
+  --chir-high:    {{colors.surface_container_high.default.hex}};
+  --chir-highest: {{colors.surface_container_highest.default.hex}};
+  --chir-text:    {{colors.on_surface.default.hex}};
+  --chir-subtle:  {{colors.on_surface_variant.default.hex}};
+  --chir-muted:   {{colors.outline.default.hex}};
+  --chir-primary: {{colors.primary.default.hex}};
+  --chir-on-primary: {{colors.on_primary.default.hex}};
+  --chir-tertiary: {{colors.tertiary.default.hex}};
+  --chir-error:   {{colors.error.default.hex}};
+
+  /* Surfaces (translucent) */
+  --background-base-lowest:  color-mix(in srgb, var(--chir-lowest) 80%, transparent) !important;
+  --background-base-lower:   color-mix(in srgb, var(--chir-low) 80%, transparent) !important;
+  --background-base-low:     color-mix(in srgb, var(--chir-base) 80%, transparent) !important;
+  --background-surface-high: color-mix(in srgb, var(--chir-mid) 80%, transparent) !important;
+  --background-surface-higher: color-mix(in srgb, var(--chir-high) 85%, transparent) !important;
+  --background-surface-highest: color-mix(in srgb, var(--chir-highest) 85%, transparent) !important;
+  --background-primary:      color-mix(in srgb, var(--chir-base) 80%, transparent) !important;
+  --background-secondary:    color-mix(in srgb, var(--chir-low) 80%, transparent) !important;
+  --background-secondary-alt: color-mix(in srgb, var(--chir-lowest) 80%, transparent) !important;
+  --background-tertiary:     color-mix(in srgb, var(--chir-lowest) 80%, transparent) !important;
+  --chat-background-default: color-mix(in srgb, var(--chir-base) 80%, transparent) !important;
+  --channeltextarea-background: var(--chir-mid) !important;
+  --background-floating:     var(--chir-mid) !important;
+  --background-mod-subtle:   color-mix(in srgb, var(--chir-high) 60%, transparent) !important;
+  --background-mod-normal:   color-mix(in srgb, var(--chir-high) 80%, transparent) !important;
+  --background-mod-strong:   color-mix(in srgb, var(--chir-highest) 85%, transparent) !important;
+  --background-modifier-hover:    color-mix(in srgb, var(--chir-high) 60%, transparent) !important;
+  --background-modifier-selected: color-mix(in srgb, var(--chir-highest) 80%, transparent) !important;
+
+  /* Text */
+  --text-default: var(--chir-text) !important;
+  --text-strong:  var(--chir-text) !important;
+  --text-muted:   var(--chir-subtle) !important;
+  --text-subtle:  var(--chir-muted) !important;
+  --text-normal:  var(--chir-text) !important;
+  --header-primary:   var(--chir-text) !important;
+  --header-secondary: var(--chir-subtle) !important;
+  --interactive-normal: var(--chir-subtle) !important;
+  --interactive-hover:  var(--chir-text) !important;
+  --interactive-active: var(--chir-primary) !important;
+  --channels-default:   var(--chir-subtle) !important;
+
+  /* Accent */
+  --brand-500: var(--chir-primary) !important;
+  --brand-360: var(--chir-primary) !important;
+  --brand-400: var(--chir-primary) !important;
+  --brand-560: var(--chir-primary) !important;
+  --brand-600: var(--chir-primary) !important;
+  --text-brand: var(--chir-primary) !important;
+  --control-brand-foreground: var(--chir-primary) !important;
+  --control-brand-foreground-new: var(--chir-primary) !important;
+  --button-filled-brand-background: var(--chir-primary) !important;
+  --button-filled-brand-text: var(--chir-on-primary) !important;
+  --text-link: var(--chir-tertiary) !important;
+  --status-danger: var(--chir-error) !important;
+  --scrollbar-thin-thumb: var(--chir-high) !important;
+  --scrollbar-auto-thumb: var(--chir-high) !important;
+}
+
+/* Let the window show through */
+html, body, #app-mount, .bg__960e4, .app_a3002d, .appMount__1bcd3 { background: transparent !important; }

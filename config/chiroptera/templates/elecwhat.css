@@ -1,0 +1,65 @@
+/* Chiroptera palette for WhatsApp Web (Elecwhat). Generated; do not edit. */
+:root, body, .light, .dark, body.web {
+  color-scheme: {{mode}};
+
+  --chir-base:    {{colors.background.default.hex}};
+  --chir-lowest:  {{colors.surface_container_lowest.default.hex}};
+  --chir-low:     {{colors.surface_container_low.default.hex}};
+  --chir-mid:     {{colors.surface_container.default.hex}};
+  --chir-high:    {{colors.surface_container_high.default.hex}};
+  --chir-highest: {{colors.surface_container_highest.default.hex}};
+  --chir-text:    {{colors.on_surface.default.hex}};
+  --chir-subtle:  {{colors.on_surface_variant.default.hex}};
+  --chir-muted:   {{colors.outline.default.hex}};
+  --chir-border:  {{colors.outline_variant.default.hex}};
+  --chir-primary: {{colors.primary.default.hex}};
+  --chir-primary-c: {{colors.primary_container.default.hex}};
+  --chir-on-primary-c: {{colors.on_primary_container.default.hex}};
+  --chir-tertiary: {{colors.tertiary.default.hex}};
+
+  --app-background: var(--chir-lowest) !important;
+  --app-background-stripe: var(--chir-lowest) !important;
+  --background-default: var(--chir-low) !important;
+  --background-default-hover: var(--chir-mid) !important;
+  --background-default-active: var(--chir-high) !important;
+  --panel-background: var(--chir-low) !important;
+  --panel-background-deeper: var(--chir-base) !important;
+  --panel-header-background: var(--chir-mid) !important;
+  --conversation-panel-background: var(--chir-base) !important;
+  --rich-text-panel-background: var(--chir-mid) !important;
+  --compose-panel-background: var(--chir-mid) !important;
+  --input-background: var(--chir-high) !important;
+  --search-input-background: var(--chir-high) !important;
+  --search-input-container-background: var(--chir-low) !important;
+  --incoming-background: var(--chir-mid) !important;
+  --incoming-background-deeper: var(--chir-high) !important;
+  --outgoing-background: var(--chir-primary-c) !important;
+  --outgoing-background-deeper: var(--chir-primary-c) !important;
+  --message-primary: var(--chir-text) !important;
+  --primary: var(--chir-text) !important;
+  --primary-strong: var(--chir-text) !important;
+  --primary-stronger: var(--chir-text) !important;
+  --secondary: var(--chir-subtle) !important;
+  --secondary-lighter: var(--chir-muted) !important;
+  --icon: var(--chir-subtle) !important;
+  --icon-lighter: var(--chir-muted) !important;
+  --icon-high-emphasis: var(--chir-text) !important;
+  --border-default: var(--chir-border) !important;
+  --border-list: var(--chir-border) !important;
+  --divider-border: var(--chir-border) !important;
+  --teal: var(--chir-primary) !important;
+  --accent: var(--chir-primary) !important;
+  --unread-marker-background: var(--chir-primary) !important;
+  --button-primary-background: var(--chir-primary) !important;
+  --link: var(--chir-tertiary) !important;
+  --WDS-surface-default: var(--chir-base) !important;
+  --WDS-surface-highlight: var(--chir-mid) !important;
+  --WDS-surface-elevated: var(--chir-mid) !important;
+  --WDS-content-default: var(--chir-text) !important;
+  --WDS-content-deemphasized: var(--chir-subtle) !important;
+  --WDS-accent: var(--chir-primary) !important;
+  --WDS-border-default: var(--chir-border) !important;
+}
+
+/* Chat wallpaper doodles clash with the palette; use a flat surface. */
+[data-asset-chat-background-dark], [data-asset-chat-background-light] { opacity: 0 !important; }

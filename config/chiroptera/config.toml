@@ -39,3 +39,21 @@ directory = "~/Pictures/Wallpapers"
 # Wallpaper every new account starts with; the picker's choice then overrides it.
 [wallpaper.default]
 path = "/usr/share/backgrounds/chiroptera/chiroptera-default.png"
+
+# VSCodium follows the wallpaper palette live: the template renders the palette JSON and the
+# hook merges it into settings.json (colorCustomizations apply on save, no reload needed).
+[theme.templates.user.vscodium]
+input_path  = "~/.config/chiroptera/templates/vscodium-colors.json"
+output_path = "~/.cache/chiroptera/vscodium/colors.json"
+post_hook   = "python3 ~/.config/chiroptera/templates/vscodium-apply.py"
+hook_async  = false
+
+# Equicord follows the wallpaper palette; surfaces are 80% opaque (edit the % in the template).
+[theme.templates.user.equicord]
+input_path  = "~/.config/chiroptera/templates/equicord.theme.css"
+output_path = "~/.config/Equicord/themes/chiroptera.theme.css"
+
+# Elecwhat (WhatsApp Web): the palette is injected as custom CSS on page load (no live reload).
+[theme.templates.user.elecwhat]
+input_path  = "~/.config/chiroptera/templates/elecwhat.css"
+output_path = "~/.config/elecwhat/chiroptera.css"
