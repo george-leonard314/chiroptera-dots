@@ -10,7 +10,7 @@ TOGGLES = {
     "communication": [({"class": "discord"}, ["discord"], True),
                       ({"class": "vesktop"}, ["vesktop"], True),
                       ({"class": "whatsapp"}, None, True)],
-    "music":  [({"class": "Spotify"}, ["spotify"], True)],
+    "music":  [({"class": "Spotify"}, ["spotify-launcher"], True)],
     "sysmon": [({"class": "btop"}, ["foot", "-a", "btop", "-T", "btop", "btop"], False)],
     "todo":   [({"class": "superProductivity"}, ["superproductivity"], True)],
     "notes":  [({"class": "kmg"}, ["kmg"], True)],
@@ -19,8 +19,14 @@ TOGGLES = {
 def hyprctl(*args):
     return subprocess.run(["hyprctl", *args], capture_output=True, text=True).stdout
 
-def dispatch(*args):
-    subprocess.run(["hyprctl", "dispatch", *args], capture_output=True)
+def dispatch(lua, *legacy):
+    # A Lua config (hyprland.lua) only takes Lua dispatches; a .conf one only the old syntax.
+    out = subprocess.run(["hyprctl", "dispatch", lua], capture_output=True, text=True).stdout
+    if out.strip() != "ok":
+        subprocess.run(["hyprctl", "dispatch", *legacy], capture_output=True)
+
+def q(s):
+    return json.dumps(s)  # a valid Lua string literal
 
 def clients():
     return json.loads(hyprctl("-j", "clients"))
@@ -30,8 +36,7 @@ def matches(client, match):
 
 def main(name):
     if name == "specialws":
-        active = json.loads(hyprctl("-j", "activeworkspace"))
-        dispatch("togglespecialworkspace", "special")
+        dispatch('hl.dsp.workspace.toggle_special("special")', "togglespecialworkspace", "special")
         return
     entries = TOGGLES[name]
     ws = f"special:{name}"
@@ -44,12 +49,15 @@ def main(name):
             if move:
                 for c in found:
                     if c["workspace"]["name"] != ws:
-                        dispatch("movetoworkspacesilent", f"{ws},address:{c['address']}")
+                        addr = f"address:{c['address']}"
+                        dispatch(f"hl.dsp.window.move({{ workspace = {q(ws)}, window = {q(addr)}, follow = false }})",
+                                 "movetoworkspacesilent", f"{ws},{addr}")
         elif command:
             present = True
-            dispatch("exec", f"[workspace {ws}] {shlex.join(command)}")
+            dispatch(f"hl.dsp.exec_cmd({q(shlex.join(command))}, {{ workspace = {q(ws)} }})",
+                     "exec", f"[workspace {ws}] {shlex.join(command)}")
     if present:
-        dispatch("togglespecialworkspace", name)
+        dispatch(f"hl.dsp.workspace.toggle_special({q(name)})", "togglespecialworkspace", name)
 
 if __name__ == "__main__":
     main(sys.argv[1])
