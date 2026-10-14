@@ -57,3 +57,56 @@ output_path = "~/.config/Equicord/themes/chiroptera.theme.css"
 [theme.templates.user.elecwhat]
 input_path  = "~/.config/chiroptera/templates/elecwhat.css"
 output_path = "~/.config/elecwhat/chiroptera.css"
+
+# The bar: transparent, with the widgets gathered into capsules. After the launcher sit the
+# OBS button (ayagmar/obs-control: record, replay buffer, stream; it needs obs-studio and
+# python-websocket-client) and the update counter (yuuto/arch-updater; it needs checkupdates
+# from pacman-contrib). chiroptera-meta pulls in all three. An enabled plugin is fetched from
+# the community source the first time the shell starts. In OBS, Tools - WebSocket Server
+# Settings - Enable WebSocket server once, so the button can reach it.
+[bar.default]
+background_opacity = 0.0
+margin_ends = 9
+start  = ["launcher", "group:g2", "group:g3", "obs", "updates"]
+center = ["group:g1"]
+end    = ["group:g4", "notifications", "clipboard", "network", "bluetooth", "volume", "brightness", "battery", "session"]
+
+[[bar.default.capsule_group]]
+id      = "g1"
+members = ["control-center", "workspaces"]
+fill    = "surface_variant"
+padding = 6.0
+
+[[bar.default.capsule_group]]
+id      = "g2"
+members = ["media", "audio_visualizer"]
+fill    = "surface_variant"
+padding = 6.0
+
+[[bar.default.capsule_group]]
+id      = "g3"
+members = ["wallpaper"]
+fill    = "surface_variant"
+padding = 6.0
+
+[[bar.default.capsule_group]]
+id      = "g4"
+members = ["clock", "date"]
+fill    = "surface_variant"
+padding = 6.0
+
+[widget.audio_visualizer]
+width = 89
+
+[widget.network]
+show_label     = false
+show_vpn_label = true
+
+[widget.obs]
+type = "ayagmar/obs-control:status"
+
+[widget.updates]
+type = "yuuto/arch-updater:widget"
+
+[plugins]
+enabled = ["yuuto/arch-updater", "ayagmar/obs-control"]
