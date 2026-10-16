@@ -1,9 +1,21 @@
 #!/usr/bin/env bash
-# Fails if a caelestia reference survives, if a personal file is tracked, or if a
+# Fails if a caelestia reference survives, if the name of the project Chiroptera
+# Shell was forked from appears anywhere, if a personal file is tracked, or if a
 # keybind points at a command that does not exist.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 status=0
+
+# The shell's former name: in any file's content (text or binary) or name,
+# tracked or untracked. Nothing here has to keep it, so only this script may
+# spell it.
+old_name=noctalia
+forked=$(git grep --untracked -n -i -e "$old_name" -- . ':!chiroptera/check-dots.sh' || true)
+forked_files=$(git ls-files --cached --others --exclude-standard | grep -i -e "$old_name" || true)
+if [ -n "$forked$forked_files" ]; then
+  echo "check-dots: the shell's former name appears:" >&2
+  printf '%s\n' "$forked" "$forked_files" | grep -v '^$' >&2; status=1
+fi
 
 leftovers=$(grep -rn -i 'caelestia' config branding bin 2>/dev/null | grep -v '<!-- keep -->' || true)
 if [ -n "$leftovers" ]; then

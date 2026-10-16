@@ -17,8 +17,8 @@ input_path  = "~/.config/chiroptera/templates/terminal-sequences"
 output_path = "~/.cache/terminal-sequences"
 post_hook   = "tee /dev/pts/[0-9]* < ~/.cache/terminal-sequences"
 
-# Control-center button (the one that carried Noctalia's owl) shows the Chiroptera bat,
-# tinted with the widget colour so it follows the palette. The launcher keeps its default glyph.
+# Control-center button shows the Chiroptera bat, tinted with the widget colour so it
+# follows the palette. The launcher keeps its default glyph.
 [widget.control-center]
 custom_image          = "~/.local/share/chiroptera/branding/chiroptera-bat-icon.svg"
 custom_image_colorize = true

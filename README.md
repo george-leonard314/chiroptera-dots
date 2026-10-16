@@ -31,7 +31,7 @@ aborts before anything is touched.
 | `bin` | `chiroptera-super-tap` (tap Super for the launcher), `chiroptera-toggle` (special-workspace apps), `chiroptera-apps`, `chiroptera-blackarch`, `chiroptera-browser` |
 | `share/applications` | launcher entries hidden on purpose (see its README) |
 | `packages` | the author's app lists for `chiroptera-apps` |
-| `chiroptera/check-dots.sh` | fails on a tracked personal file, a generated file, or a keybind pointing at a command that does not exist |
+| `chiroptera/check-dots.sh` | fails on the shell's former name anywhere, a tracked personal file, a generated file, or a keybind pointing at a command that does not exist |
 
 ChiropteraOS packages this repository as `chiroptera-dots`. The trees go to
 `/usr/share/chiroptera/dots`, which the installed `chiroptera-dots` command (this
