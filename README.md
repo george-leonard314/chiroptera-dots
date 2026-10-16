@@ -21,12 +21,21 @@ aborts before anything is touched.
 | Path | Purpose |
 |---|---|
 | `config/hypr` | Hyprland: keybinds via Chiroptera IPC, window rules, autostart |
-| `config/chiroptera` | shell config, palette templates for the terminal and the fastfetch logo |
+| `config/chiroptera` | Chiroptera Shell `config.toml` and wallpaper-palette templates: terminal, fastfetch logo, VSCodium, Equicord, Elecwhat |
 | `config/fish` | shell config, the `faah` error sound and red border flash |
 | `config/foot`, `config/btop`, `config/fastfetch`, `config/starship.toml` | terminal and tool configs, coloured by the shell's templates |
-| `branding` | logo marks and the default wallpaper |
+| `config/gtk-3.0`, `config/gtk-4.0`, `config/fontconfig`, `config/xfce4` | GTK theme and fonts, Thunar |
+| `config/uwsm`, `config/pacseek` | session environment, package search TUI |
 | `config/miscellaneous` | one-off helpers kept in `~/.config/miscellaneous`, such as the Fontys eduroam installer |
-| `bin` | `chiroptera-super-tap` (tap Super for the launcher), `chiroptera-toggle` (special-workspace apps) |
+| `branding` | bat logo marks and the default wallpapers |
+| `bin` | `chiroptera-super-tap` (tap Super for the launcher), `chiroptera-toggle` (special-workspace apps), `chiroptera-apps`, `chiroptera-blackarch`, `chiroptera-browser` |
+| `share/applications` | launcher entries hidden on purpose (see its README) |
+| `packages` | the author's app lists for `chiroptera-apps` |
+| `chiroptera/check-dots.sh` | fails on a tracked personal file, a generated file, or a keybind pointing at a command that does not exist |
+
+ChiropteraOS packages this repository as `chiroptera-dots`. The trees go to
+`/usr/share/chiroptera/dots`, which the installed `chiroptera-dots` command (this
+`install.sh`) copies from, and to `/etc/skel`, so new accounts start with them.
 
 ## eduroam (Fontys)
 
@@ -64,3 +73,7 @@ chiroptera-apps
 
 It installs everything through paru with `--needed`, so re-running it is
 safe. The BlackArch list is skipped unless `[blackarch]` is configured.
+
+## License
+
+GPL-3.0. See `LICENSE` and `CREDITS`.

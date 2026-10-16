@@ -1,0 +1,11 @@
+Credits
+=======
+
+The Hyprland configuration and several tool configs in this repository began
+as the Caelestia dotfiles by soramane and contributors, GPL-3.0:
+https://github.com/caelestia-dots/caelestia
+
+config/miscellaneous/eduroam-fontys.py is the eduroam CAT Linux installer
+generated for Fontys Hogescholen, by the GEANT project (Tomasz Wolniewicz,
+Michal Gasewicz and contributors), with a small ChiropteraOS patch to how it
+saves the CA certificate: https://cat.eduroam.org
