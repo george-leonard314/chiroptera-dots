@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Install the ChiropteraOS dotfiles into $XDG_CONFIG_HOME.
+# Install the ChiropteraOS dotfiles into $XDG_CONFIG_HOME, and the shell
+# plugins they enable into $XDG_DATA_HOME/chiroptera/plugins.
 #
 #   ./install.sh --link    symlink each entry to this checkout (development)
 #   ./install.sh --copy    copy, skipping anything you have changed
@@ -26,11 +27,13 @@ if [ -d "$here/config" ]; then
   src_branding="$here/branding"
   src_wallpapers="$here/branding/wallpapers"
   src_bin="$here/bin"
+  src_plugins="$here/share/chiroptera/plugins"
 else
   src_config="/usr/share/chiroptera/dots"
   src_branding="/usr/share/chiroptera/branding"
   src_wallpapers="/usr/share/backgrounds/chiroptera"
   src_bin=""            # the package already installed these to /usr/bin
+  src_plugins="/usr/share/chiroptera/plugins"
 fi
 
 # Destinations already replaced or linked in this run, so an abort can report
@@ -49,8 +52,9 @@ abort() {
   exit 1
 }
 
+# backup PATH [DIR]: archive PATH next to itself, or into DIR when given.
 backup() {
-  local target=$1 resolved stamp dest n
+  local target=$1 into=${2:-} resolved stamp dest n
   # Nothing there (note: -e is false for a dangling symlink, so test -L too).
   [ -e "$target" ] || [ -L "$target" ] || return 0
 
@@ -68,9 +72,13 @@ backup() {
   # collision rather than clobbering the earlier run's backup.
   stamp=$(date +%Y%m%d-%H%M%S)
   dest="$target.pre-dots-$stamp"
+  if [ -n "$into" ]; then
+    mkdir -p "$into" || abort "could not create $into"
+    dest="$into/${target##*/}.pre-dots-$stamp"
+  fi
   n=1
   while [ -e "$dest" ] || [ -L "$dest" ]; do
-    dest="$target.pre-dots-$stamp.$n"
+    dest="${dest%.pre-dots-*}.pre-dots-$stamp.$n"
     n=$((n + 1))
   done
   if ! cp -a "$target" "$dest"; then
@@ -83,6 +91,10 @@ case "$mode" in
   --diff)
     for e in "${entries[@]}"; do
       diff -rq "$src_config/$e" "$cfg/$e" 2>&1 | sed "s|$src_config/||;s|$cfg/||" || true
+    done
+    for p in "$src_plugins"/*/; do
+      p=${p%/}
+      diff -rq "$p" "$data/chiroptera/plugins/${p##*/}" 2>&1 | sed "s|$src_plugins/|plugins/|;s|$data/chiroptera/||" || true
     done
     exit 0 ;;
   --link)
@@ -97,16 +109,31 @@ esac
 
 mkdir -p "$cfg" "$data/chiroptera" "$HOME/.local/bin" "$HOME/Pictures/Wallpapers"
 
-for e in "${entries[@]}"; do
-  src="$src_config/$e"; dst="$cfg/$e"
-  [ -e "$src" ] || continue
+# place SRC DST [BACKUP_DIR]: link, copy or skip one entry, per the mode.
+place() {
+  local src=$1 dst=$2 into=${3:-}
+  [ -e "$src" ] || return 0
   if [ "$mode" = "--link" ]; then
-    backup "$dst"; rm -rf "$dst"; ln -s "$src" "$dst"; replaced+=("$dst"); echo "linked  $dst"
+    backup "$dst" "$into"; rm -rf "$dst"; ln -s "$src" "$dst"; replaced+=("$dst"); echo "linked  $dst"
   elif [ -e "$dst" ] && [ "$mode" != "--force" ] && ! diff -rq "$src" "$dst" >/dev/null 2>&1; then
     echo "skipped $dst (differs; --force to overwrite)"
   else
-    backup "$dst"; rm -rf "$dst"; cp -a "$src" "$dst"; replaced+=("$dst"); echo "copied  $dst"
+    backup "$dst" "$into"; rm -rf "$dst"; cp -a "$src" "$dst"; replaced+=("$dst"); echo "copied  $dst"
   fi
+}
+
+for e in "${entries[@]}"; do
+  place "$src_config/$e" "$cfg/$e"
+done
+
+# Plugins config.toml enables, into the shell's local plugin source. Only these
+# plugins' own folders are touched; other plugins there are left alone. Their
+# backups go beside that folder, not into it: the shell would load a backed-up
+# plugin.toml as a second copy of the plugin.
+mkdir -p "$data/chiroptera/plugins"
+for p in "$src_plugins"/*/; do
+  p=${p%/}
+  place "$p" "$data/chiroptera/plugins/${p##*/}" "$data/chiroptera/plugin-backups"
 done
 
 # Branding and helper scripts are shared regardless of mode.

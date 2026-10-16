@@ -1,0 +1,114 @@
+/* Chiroptera: Zen Browser's about: pages follow the wallpaper palette. The
+ * palette block matches zen-userChrome.css; the rules below take their colors
+ * from it. Derived from the zen-browser template formerly bundled with
+ * Chiroptera Shell (MIT; see LICENSE next to this file). */
+@media (prefers-color-scheme: dark) {
+  * {
+    --base:           {{colors.surface_container_lowest.dark.hex}};
+    --surface:        {{colors.surface_container_low.dark.hex}};
+    --overlay:        {{colors.surface_container.dark.hex}};
+    --muted:          {{colors.surface_container_high.dark.hex}};
+    --subtle:         {{colors.surface_container_highest.dark.hex}};
+    --text:           {{colors.on_surface.dark.hex}};
+    --secondary:      {{colors.secondary.dark.hex}};
+    --primary:        {{colors.primary.dark.hex}};
+    --on_primary:      {{colors.on_primary.dark.hex}};
+  }
+}
+@media (prefers-color-scheme: light) {
+  * {
+    --base:           {{colors.surface_container_lowest.light.hex}};
+    --surface:        {{colors.surface_container_low.light.hex}};
+    --overlay:        {{colors.surface_container.light.hex}};
+    --muted:          {{colors.surface_container_high.light.hex}};
+    --subtle:         {{colors.surface_container_highest.light.hex}};
+    --text:           {{colors.on_surface.light.hex}};
+    --secondary:      {{colors.secondary.light.hex}};
+    --primary:        {{colors.primary.light.hex}};
+    --on_primary:      {{colors.on_primary.light.hex}};
+  }
+}
+
+/* Common variables affecting all pages */
+  @-moz-document url-prefix("about:") {
+    :root {
+      --in-content-page-color: var(--secondary) !important;
+      --color-accent-primary: var(--primary) !important;
+      /* --color-accent-primary-hover: rgb(249, 217, 240) !important;
+      --color-accent-primary-active: rgb(245, 195, 219) !important; */
+      background-color: var(--overlay) !important;
+      --in-content-page-background: var(--overlay) !important;
+    }
+
+  }
+
+  /* Variables and styles specific to about:newtab and about:home */
+  @-moz-document url("about:newtab"), url("about:home") {
+
+    :root {
+      --newtab-background-color: var(--overlay) !important;
+      --newtab-background-color-secondary: var(--muted) !important;
+      --newtab-element-hover-color: var(--muted) !important;
+      --newtab-text-primary-color: var(--secondary) !important;
+      --newtab-wordmark-color: var(--secondary) !important;
+      --newtab-primary-action-background: var(--primary) !important;
+    }
+
+    .icon {
+      color: var(--primary) !important;
+    }
+
+    .card-outer:is(:hover, :focus, .active):not(.placeholder) .card-title {
+      color: var(--primary) !important;
+    }
+  }
+
+  /* Variables and styles specific to about:preferences */
+  @-moz-document url-prefix("about:preferences") {
+    :root {
+      --zen-colors-tertiary: var(--surface) !important;
+      --in-content-text-color: var(--secondary) !important;
+      --link-color: var(--primary) !important;
+      /* --link-color-hover: rgb(249, 217, 240) !important; */
+      --zen-colors-primary: var(--muted) !important;
+      --in-content-box-background: var(--muted) !important;
+      --zen-primary-color: var(--primary) !important;
+    }
+
+    button,
+    groupbox menulist {
+      background: var(--muted) !important;
+      color: var(--secondary) !important;
+    }
+
+    .main-content {
+      background-color: var(--base) !important;
+    }
+  }
+
+  /* Variables and styles specific to about:addons */
+  @-moz-document url-prefix("about:addons") {
+    :root {
+      --zen-dark-color-mix-base: var(--surface) !important;
+      --background-color-box: var(--overlay) !important;
+    }
+  }
+
+  /* Variables and styles specific to about:protections */
+  @-moz-document url-prefix("about:protections") {
+    :root {
+      --zen-primary-color: var(--overlay) !important;
+      --in-content-primary-button-text-color-hover: var(--secondary) !important;
+      --in-content-primary-button-background: var(--overlay) !important;
+      --in-content-primary-button-text-color: var(--secondary) !important;
+    }
+
+    .card {
+      background-color: var(--muted) !important;
+    }
+  }
+    /* Pane UI button visibility issue fix */
+  #PanelUI-menu-button[open] .toolbarbutton-icon {
+    fill: var(--primary) !important;
+  }
+}

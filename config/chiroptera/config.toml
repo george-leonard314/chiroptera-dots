@@ -4,11 +4,26 @@
 [theme.templates]
 enable_builtin_templates   = true
 builtin_ids                = ["foot", "btop", "gtk3", "gtk4", "qt"]
-enable_community_templates = true
-# zen-browser: Zen follows the wallpaper palette through userChrome.css and
-# userContent.css in every Zen profile; the Zen autoconfig in chiroptera-meta
-# recolors open windows live. A no-op when Zen is not installed.
-community_ids              = ["zen-browser"]
+# Community templates are read only from ~/.local/state/chiroptera/community-templates,
+# which nothing here fills; every template this config enables ships with it.
+enable_community_templates = false
+community_ids              = []
+
+# Zen Browser follows the wallpaper palette through userChrome.css and userContent.css
+# in every Zen profile (apply.sh @imports the rendered files); the Zen autoconfig in
+# chiroptera-meta recolors open windows live. A no-op when Zen is not installed. Both
+# entries run the same apply.sh, so neither runs it in the background.
+[theme.templates.user.zen-browser-chrome]
+input_path  = "~/.config/chiroptera/templates/zen-browser/zen-userChrome.css"
+output_path = "~/.cache/chiroptera/zen-browser/zen-userChrome.css"
+post_hook   = "bash ~/.config/chiroptera/templates/zen-browser/apply.sh"
+hook_async  = false
+
+[theme.templates.user.zen-browser-content]
+input_path  = "~/.config/chiroptera/templates/zen-browser/zen-userContent.css"
+output_path = "~/.cache/chiroptera/zen-browser/zen-userContent.css"
+post_hook   = "bash ~/.config/chiroptera/templates/zen-browser/apply.sh"
+hook_async  = false
 
 # Live-recolor every open terminal when the palette changes (foot cannot reload
 # its config, so OSC sequences are pushed to each pty).
@@ -61,9 +76,11 @@ output_path = "~/.config/elecwhat/chiroptera.css"
 # The bar: transparent, with the widgets gathered into capsules. After the launcher sit the
 # OBS button (ayagmar/obs-control: record, replay buffer, stream; it needs obs-studio and
 # python-websocket-client) and the update counter (yuuto/arch-updater; it needs checkupdates
-# from pacman-contrib). chiroptera-meta pulls in all three. An enabled plugin is fetched from
-# the community source the first time the shell starts. In OBS, Tools - WebSocket Server
-# Settings - Enable WebSocket server once, so the button can reach it.
+# from pacman-contrib). chiroptera-meta pulls in all three. Both plugins ship with
+# chiroptera-dots (share/chiroptera/plugins) and are installed into
+# ~/.local/share/chiroptera/plugins, the shell's local plugin source; nothing is fetched.
+# In OBS, Tools - WebSocket Server Settings - Enable WebSocket server once, so the button
+# can reach it.
 [bar.default]
 background_opacity = 0.0
 margin_ends = 9

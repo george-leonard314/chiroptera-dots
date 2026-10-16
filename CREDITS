@@ -9,3 +9,18 @@ config/miscellaneous/eduroam-fontys.py is the eduroam CAT Linux installer
 generated for Fontys Hogescholen, by the GEANT project (Tomasz Wolniewicz,
 Michal Gasewicz and contributors), with a small ChiropteraOS patch to how it
 saves the CA certificate: https://cat.eduroam.org
+
+share/chiroptera/plugins/ holds two Chiroptera Shell plugins that config.toml
+enables, vendored so a new account needs no online catalog. Both are MIT, with
+their notices in each plugin's LICENSE:
+- arch-updater (yuuto/arch-updater) by yuuto, version 2.0.3. Its manifest
+  declares the MIT license; the upstream folder had no LICENSE file, so the
+  standard MIT text naming its author was added.
+- obs-control (ayagmar/obs-control) by ayagmar, version 1.0.0.
+ChiropteraOS changes: they call the plugin API and the CLI by the shell's own
+name, their docs name Chiroptera Shell, and the catalog thumbnails are left out.
+
+config/chiroptera/templates/zen-browser/ derives from the zen-browser template
+formerly bundled with Chiroptera Shell, MIT (notice in its LICENSE), with the
+palette split by color scheme for live recoloring. Its apply.sh is ChiropteraOS's
+own.

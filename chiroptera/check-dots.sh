@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fails if a caelestia reference survives, if the name of the project Chiroptera
-# Shell was forked from appears anywhere, if a personal file is tracked, or if a
+# Shell was forked from appears anywhere, if a personal file is tracked, if
+# config.toml depends on a plugin or template that does not ship here, or if a
 # keybind points at a command that does not exist.
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
@@ -8,13 +9,57 @@ status=0
 
 # The shell's former name: in any file's content (text or binary) or name,
 # tracked or untracked. Nothing here has to keep it, so only this script may
-# spell it.
-old_name=noctalia
-forked=$(git grep --untracked -n -i -e "$old_name" -- . ':!chiroptera/check-dots.sh' || true)
+# spell it. The stem catches inflected forms in other languages too.
+old_name=noctali
+# Exception: the MIT notice of the vendored zen-browser template keeps its
+# copyright line verbatim.
+forked=$(git grep --untracked -n -i -e "$old_name" -- . ':!chiroptera/check-dots.sh' \
+  ':!config/chiroptera/templates/zen-browser/LICENSE' || true)
 forked_files=$(git ls-files --cached --others --exclude-standard | grep -i -e "$old_name" || true)
 if [ -n "$forked$forked_files" ]; then
   echo "check-dots: the shell's former name appears:" >&2
   printf '%s\n' "$forked" "$forked_files" | grep -v '^$' >&2; status=1
+fi
+
+# Nothing is fetched for a new account: every plugin config.toml enables or puts
+# in the bar, every community template it enables and every user template it
+# renders must ship here (plugins under share/chiroptera/plugins, user
+# templates under config/chiroptera).
+if ! unshipped=$(python3 -I - config/chiroptera/config.toml share/chiroptera/plugins config <<'PY'
+import pathlib, sys, tomllib
+
+config_path, plugins_dir, config_dir = (pathlib.Path(a) for a in sys.argv[1:])
+config = tomllib.loads(config_path.read_text())
+shipped = set()
+for manifest in plugins_dir.glob("*/plugin.toml"):
+    shipped.add(tomllib.loads(manifest.read_text())["id"])
+    if not (manifest.parent / "LICENSE").is_file():
+        print(f"{manifest.parent}: vendored plugin without its LICENSE")
+
+problems = []
+for plugin in config.get("plugins", {}).get("enabled", []):
+    if plugin not in shipped:
+        problems.append(f"enabled plugin {plugin} does not ship in {plugins_dir}")
+for name, widget in config.get("widget", {}).items():
+    kind = widget.get("type", "")
+    if ":" in kind and kind.split(":", 1)[0] not in shipped:
+        problems.append(f"widget.{name} uses plugin {kind.split(':', 1)[0]}, which does not ship in {plugins_dir}")
+templates = config.get("theme", {}).get("templates", {})
+for template in templates.get("community_ids", []):
+    problems.append(f"community template {template} is enabled, but none ships; use a user template")
+for name, template in templates.get("user", {}).items():
+    source = template.get("input_path", "")
+    prefix = "~/.config/"
+    if not source.startswith(prefix) or not (config_dir / source[len(prefix):]).is_file():
+        problems.append(f"theme.templates.user.{name}: input {source} does not ship in {config_dir}")
+print("\n".join(problems))
+sys.exit(1 if problems else 0)
+PY
+); then
+  echo "check-dots: config.toml depends on something that does not ship:" >&2
+  echo "$unshipped" >&2; status=1
+elif [ -n "$unshipped" ]; then
+  echo "check-dots: $unshipped" >&2; status=1
 fi
 
 leftovers=$(grep -rn -i 'caelestia' config branding bin 2>/dev/null | grep -v '<!-- keep -->' || true)

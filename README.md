@@ -21,7 +21,7 @@ aborts before anything is touched.
 | Path | Purpose |
 |---|---|
 | `config/hypr` | Hyprland: keybinds via Chiroptera IPC, window rules, autostart |
-| `config/chiroptera` | Chiroptera Shell `config.toml` and wallpaper-palette templates: terminal, fastfetch logo, VSCodium, Equicord, Elecwhat |
+| `config/chiroptera` | Chiroptera Shell `config.toml` and wallpaper-palette templates: terminal, fastfetch logo, VSCodium, Equicord, Elecwhat, Zen Browser |
 | `config/fish` | shell config, the `faah` error sound and red border flash |
 | `config/foot`, `config/btop`, `config/fastfetch`, `config/starship.toml` | terminal and tool configs, coloured by the shell's templates |
 | `config/gtk-3.0`, `config/gtk-4.0`, `config/fontconfig`, `config/xfce4` | GTK theme and fonts, Thunar |
@@ -30,12 +30,14 @@ aborts before anything is touched.
 | `branding` | bat logo marks and the default wallpapers |
 | `bin` | `chiroptera-super-tap` (tap Super for the launcher), `chiroptera-toggle` (special-workspace apps), `chiroptera-apps`, `chiroptera-blackarch`, `chiroptera-browser` |
 | `share/applications` | launcher entries hidden on purpose (see its README) |
+| `share/chiroptera/plugins` | the shell plugins `config.toml` enables (OBS control, Arch updater), installed into `~/.local/share/chiroptera/plugins` (see its README) |
 | `packages` | the author's app lists for `chiroptera-apps` |
-| `chiroptera/check-dots.sh` | fails on the shell's former name anywhere, a tracked personal file, a generated file, or a keybind pointing at a command that does not exist |
+| `chiroptera/check-dots.sh` | fails on the shell's former name anywhere, a tracked personal file, a generated file, a plugin or template `config.toml` needs that does not ship here, or a keybind pointing at a command that does not exist |
 
 ChiropteraOS packages this repository as `chiroptera-dots`. The trees go to
 `/usr/share/chiroptera/dots`, which the installed `chiroptera-dots` command (this
-`install.sh`) copies from, and to `/etc/skel`, so new accounts start with them.
+`install.sh`) copies from, and to `/etc/skel`, so new accounts start with them;
+the plugins go to `/usr/share/chiroptera/plugins` and `/etc/skel/.local/share/chiroptera/plugins`.
 
 ## eduroam (Fontys)
 
