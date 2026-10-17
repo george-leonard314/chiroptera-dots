@@ -7,6 +7,7 @@ fetches no online plugin catalog, so they ship here:
 | --- | --- | --- | --- |
 | `arch-updater` | `yuuto/arch-updater` | yuuto | MIT |
 | `obs-control` | `ayagmar/obs-control` | ayagmar | MIT |
+| `w-engine` | `tadomika_ari/w-engine` | TadomiKa-Ari | MIT |
 
 `install.sh` copies (or, with `--link`, links) each folder into
 `~/.local/share/chiroptera/plugins/`, the shell's local plugin source, which

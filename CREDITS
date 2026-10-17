@@ -10,15 +10,26 @@ generated for Fontys Hogescholen, by the GEANT project (Tomasz Wolniewicz,
 Michal Gasewicz and contributors), with a small ChiropteraOS patch to how it
 saves the CA certificate: https://cat.eduroam.org
 
-share/chiroptera/plugins/ holds two Chiroptera Shell plugins that config.toml
-enables, vendored so a new account needs no online catalog. Both are MIT, with
+share/chiroptera/plugins/ holds three Chiroptera Shell plugins that config.toml
+enables, vendored so a new account needs no online catalog. All are MIT, with
 their notices in each plugin's LICENSE:
 - arch-updater (yuuto/arch-updater) by yuuto, version 2.0.3. Its manifest
   declares the MIT license; the upstream folder had no LICENSE file, so the
   standard MIT text naming its author was added.
 - obs-control (ayagmar/obs-control) by ayagmar, version 1.0.0.
+- w-engine (tadomika_ari/w-engine) by TadomiKa-Ari, version 1.4.0, from the
+  community catalog at commit cea27fb70c53. Its manifest declares the MIT
+  license; the upstream folder had no LICENSE file, so the standard MIT text
+  naming its author was added.
 ChiropteraOS changes: they call the plugin API and the CLI by the shell's own
 name, their docs name Chiroptera Shell, and the catalog thumbnails are left out.
+w-engine also finds the Workshop in every Steam library libraryfolders.vdf
+lists and hands linux-wallpaperengine the wallpaper's folder and that library's
+Wallpaper Engine assets (the engine searches the default library only), puts
+wallpapers on the background layer when none is chosen (the engine's default,
+bottom, covers the shell's desktop widgets), and its panel shows 24 wallpapers
+a page instead of 48 and reads each project.json once (a 48-tile page overran
+the shell's per-call CPU budget, which turns the panel off).
 
 config/chiroptera/templates/zen-browser/ derives from the zen-browser template
 formerly bundled with Chiroptera Shell, MIT (notice in its LICENSE), with the

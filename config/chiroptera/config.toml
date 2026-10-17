@@ -102,7 +102,7 @@ padding = 6.0
 
 [[bar.default.capsule_group]]
 id      = "g3"
-members = ["wallpaper"]
+members = ["wallpaper", "w-engine"]
 fill    = "surface_variant"
 padding = 6.0
 
@@ -125,5 +125,10 @@ type = "ayagmar/obs-control:status"
 [widget.updates]
 type = "yuuto/arch-updater:widget"
 
+# Wallpaper Engine wallpapers (live scenes and videos from the Steam Workshop),
+# next to the wallpaper picker; needs Wallpaper Engine owned and installed in Steam.
+[widget.w-engine]
+type = "tadomika_ari/w-engine:w-engine-widget"
+
 [plugins]
-enabled = ["yuuto/arch-updater", "ayagmar/obs-control"]
+enabled = ["yuuto/arch-updater", "ayagmar/obs-control", "tadomika_ari/w-engine"]
