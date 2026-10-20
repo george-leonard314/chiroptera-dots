@@ -3,7 +3,7 @@
 
 [theme.templates]
 enable_builtin_templates   = true
-builtin_ids                = ["foot", "btop", "gtk3", "gtk4", "qt"]
+builtin_ids                = ["foot", "btop", "gtk3", "gtk4", "qt", "hyprland", "starship"]
 # Community templates are read only from ~/.local/state/chiroptera/community-templates,
 # which nothing here fills; every template this config enables ships with it.
 enable_community_templates = false
@@ -72,6 +72,24 @@ output_path = "~/.config/Equicord/themes/chiroptera.theme.css"
 [theme.templates.user.elecwhat]
 input_path  = "~/.config/chiroptera/templates/elecwhat.css"
 output_path = "~/.config/elecwhat/chiroptera.css"
+
+# KMG takes its backgrounds from the wallpaper palette (dark tones); the accent stays the
+# folder color of the open document. The hook copies the theme into every KMG workspace,
+# and KMG recolors open windows live.
+[theme.templates.user.kmg]
+input_path  = "~/.config/chiroptera/templates/kmg-theme.css"
+output_path = "~/.cache/chiroptera/kmg/theme.css"
+post_hook   = "python3 ~/.config/chiroptera/templates/kmg-apply.py"
+hook_async  = false
+
+# Spotify (Spicetify) follows the wallpaper palette with a Chiroptera theme; the hook runs
+# `spicetify refresh` and the chiroptera-live extension recolors the open window live.
+# One-time setup: ~/.config/chiroptera/templates/spicetify-setup.sh
+[theme.templates.user.spicetify]
+input_path  = "~/.config/chiroptera/templates/spicetify-color.ini"
+output_path = "~/.config/spicetify/Themes/Chiroptera/color.ini"
+post_hook   = "bash ~/.config/chiroptera/templates/spicetify-apply.sh"
+hook_async  = false
 
 # The bar: transparent, with the widgets gathered into capsules. After the launcher sit the
 # OBS button (ayagmar/obs-control: record, replay buffer, stream; it needs obs-studio and

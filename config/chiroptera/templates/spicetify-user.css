@@ -1,0 +1,35 @@
+/* Chiroptera theme for Spotify. Colors come from color.ini (--spice-*), which
+   Chiroptera regenerates from the wallpaper; this file maps them onto Spotify's
+   own Encore tokens so the parts replace_colors misses follow the palette too. */
+:root, .encore-dark-theme, .encore-base-set {
+  --background-base: var(--spice-main) !important;
+  --background-highlight: var(--spice-highlight) !important;
+  --background-press: var(--spice-highlight-elevated) !important;
+  --background-elevated-base: var(--spice-main-elevated) !important;
+  --background-elevated-highlight: var(--spice-highlight-elevated) !important;
+  --background-tinted-base: rgba(var(--spice-rgb-text), .08) !important;
+  --background-tinted-highlight: rgba(var(--spice-rgb-text), .12) !important;
+  --text-base: var(--spice-text) !important;
+  --text-subdued: var(--spice-subtext) !important;
+  --text-bright-accent: var(--spice-button) !important;
+  --essential-base: var(--spice-text) !important;
+  --essential-subdued: var(--spice-misc) !important;
+  --essential-bright-accent: var(--spice-button) !important;
+  --decorative-base: var(--spice-text) !important;
+  --decorative-subdued: var(--spice-highlight-elevated) !important;
+}
+
+/* Play buttons and the active progress/volume bar take the accent. */
+.encore-bright-accent-set {
+  --background-base: var(--spice-button) !important;
+  --background-highlight: var(--spice-button-active) !important;
+  --background-press: var(--spice-button) !important;
+}
+.playback-progressbar:hover .x-progressBar-fillColor,
+.volume-bar:hover .x-progressBar-fillColor,
+.x-progressBar-fillColor { background-color: var(--spice-button) !important; }
+
+/* Playlist and album headers fade into the palette instead of the cover's color. */
+.main-entityHeader-backgroundColor,
+.main-actionBarBackground-background,
+.main-topBar-background { background-color: var(--spice-main) !important; background-image: none !important; }
