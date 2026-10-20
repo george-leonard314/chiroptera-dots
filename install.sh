@@ -19,7 +19,7 @@ cfg=${XDG_CONFIG_HOME:-$HOME/.config}
 data=${XDG_DATA_HOME:-$HOME/.local/share}
 mode=${1:---copy}
 
-entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm pacseek fontconfig miscellaneous)
+entries=(hypr chiroptera fish foot btop fastfetch starship.toml uwsm pacseek fontconfig miscellaneous gtk-3.0 gtk-4.0 xfce4)
 
 # Run either from a git checkout or as the installed /usr/bin/chiroptera-dots.
 if [ -d "$here/config" ]; then
@@ -135,6 +135,11 @@ for p in "$src_plugins"/*/; do
   p=${p%/}
   place "$p" "$data/chiroptera/plugins/${p##*/}" "$data/chiroptera/plugin-backups"
 done
+
+# hyprland.conf sources the Hyprland theme template's output, which the repo doesn't
+# track; give Hyprland an empty stand-in until the shell renders the palette.
+[ -e "$cfg/hypr/chiroptera.conf" ] \
+  || printf '# Rendered by the Chiroptera Hyprland theme template.\n' > "$cfg/hypr/chiroptera.conf"
 
 # Branding and helper scripts are shared regardless of mode.
 mkdir -p "$data/chiroptera/branding"

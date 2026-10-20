@@ -10,6 +10,7 @@ config/foot/themes/
 config/fastfetch/themes/
 config/btop/themes/
 config/hypr/scheme/current.conf
+config/hypr/chiroptera.conf
 branding/fastfetch-logo.*
 
 # Backups and editor leftovers
